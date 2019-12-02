@@ -1,3 +1,19 @@
 #!/usr/bin/env ruby
 
 require "visualize_activities"
+require "thor"
+require 'time'
+
+class VisualizeActivitiesCLI < Thor
+  desc 'issues target_date', 'fetch issues activities'
+  def issues(target_date)
+    p VisualizeActivities::Issues.fetch(
+        ENV['OWNER'],
+        ENV['REPOSITORY'],
+        ENV['TARGET'],
+        Time.parse(target_date),
+    ).to_h
+  end
+end
+
+VisualizeActivitiesCLI.start(ARGV)
