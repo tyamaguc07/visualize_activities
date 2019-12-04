@@ -19,4 +19,4 @@ module VisualizeActivities
   # Your code goes here...
 end
 
-require 'visualize_activities/issues'
+require 'visualize_activities/query/base'

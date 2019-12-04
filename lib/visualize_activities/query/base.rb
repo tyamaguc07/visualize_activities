@@ -1,0 +1,1 @@
+require 'visualize_activities/query/issues'

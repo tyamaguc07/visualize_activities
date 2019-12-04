@@ -1,6 +1,6 @@
-module VisualizeActivities
+module VisualizeActivities::Query
   class Issues
-    def self.fetch(owner, repository, target, target_time)
+    def self.search(owner, repository, target, target_time)
       VisualizeActivities::Client.query(Query, variables: {
         owner: owner,
         repository: repository,

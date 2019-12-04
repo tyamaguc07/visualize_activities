@@ -7,7 +7,7 @@ require 'time'
 class VisualizeActivitiesCLI < Thor
   desc 'issues target_date', 'fetch issues activities'
   def issues(target_date)
-    p VisualizeActivities::Issues.fetch(
+    p VisualizeActivities::Query::Issues.search(
         ENV['OWNER'],
         ENV['REPOSITORY'],
         ENV['TARGET'],
