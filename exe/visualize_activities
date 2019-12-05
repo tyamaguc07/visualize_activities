@@ -5,14 +5,9 @@ require "thor"
 require 'time'
 
 class VisualizeActivitiesCLI < Thor
-  desc 'issues target_date', 'fetch issues activities'
-  def issues(target_date)
-    p VisualizeActivities::Query::Issues.search(
-        ENV['OWNER'],
-        ENV['REPOSITORY'],
-        ENV['TARGET'],
-        Time.parse(target_date),
-    ).to_h
+  desc 'exec target_date', 'fetch issues activities'
+  def exec(target_date)
+    VisualizeActivities.execute(Time.parse(target_date))
   end
 end
 

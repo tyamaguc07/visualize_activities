@@ -3,6 +3,8 @@ require "visualize_activities/version"
 require "graphql/client"
 require "graphql/client/http"
 
+require 'erb'
+
 module VisualizeActivities
   HTTP = GraphQL::Client::HTTP.new('https://api.github.com/graphql') do
     def headers(context)
@@ -16,7 +18,28 @@ module VisualizeActivities
   Client = GraphQL::Client.new(schema: Schema, execute: HTTP)
 
   class Error < StandardError; end
-  # Your code goes here...
+
+  def self.execute(target_time)
+    issues = VisualizeActivities::Query::Issues.search(
+        ENV['OWNER'],
+        ENV['REPOSITORY'],
+        ENV['TARGET'],
+        target_time,
+    )
+
+    template = <<template
+# Assigned issues
+
+<% issues.each do |issue| %>
+
+<%= issue.to_markdown %>
+
+<% end %>
+template
+
+    puts ERB.new(template).result(binding)
+  end
 end
 
 require 'visualize_activities/query/base'
+require 'visualize_activities/base'

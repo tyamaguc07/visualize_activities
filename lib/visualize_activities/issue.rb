@@ -1,5 +1,12 @@
 module VisualizeActivities
-  Issue = Struct.new(:author, :title, :body, :created_at) do
+  Issue = Struct.new(:author, :title, :body, :url, :created_at) do
 
+    def to_markdown
+      <<-"MARKDOWN"
+### [#{title}](#{url})
+
+<pre>#{body}</pre>
+      MARKDOWN
+    end
   end
 end
