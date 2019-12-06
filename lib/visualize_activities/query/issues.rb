@@ -9,7 +9,7 @@ module VisualizeActivities::Query
       })
 
       result.data.repository.issues.nodes.map do |issue|
-        VisualizeActivities::Issue.new(issue.author.login, issue.title, issue.body, issue.url, issue.created_at)
+        VisualizeActivities::Issue.new(issue.author.login, issue.title, issue.body_html, issue.url, issue.created_at)
       end
     end
 
@@ -20,7 +20,7 @@ query($owner: String!, $repository: String!, $target: String!, $since: DateTime!
       nodes {
         title
         author {login}
-        body
+        bodyHTML
         url
         createdAt
         timelineItems(
