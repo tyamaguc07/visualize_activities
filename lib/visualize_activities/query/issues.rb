@@ -35,12 +35,9 @@ query($owner: String!, $repository: String!, $target: String!, $since: DateTime!
                 url
                 createdAt
               }
-              ... on AssignedEvent {
-                assignee {
-                  ... on User {
-                    login
-                  }
-                }
+              ... on IssueComment{
+                author {login}
+                bodyHTML
                 createdAt
               }
             }
