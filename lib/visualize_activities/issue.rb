@@ -7,7 +7,7 @@ module VisualizeActivities
       <<-"MARKDOWN"
 ### [#{title}](#{url})
 
-<iframe srcdoc="#{escaped_body_html}">
+<iframe srcdoc="#{escaped_body_html}" style="width: 100%">
 </iframe>
       MARKDOWN
     end
