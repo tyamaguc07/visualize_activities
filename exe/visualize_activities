@@ -2,12 +2,11 @@
 
 require "visualize_activities"
 require "thor"
-require 'time'
 
 class VisualizeActivitiesCLI < Thor
   desc 'exec target_date', 'fetch issues activities'
   def exec(target_date)
-    VisualizeActivities.execute(Time.parse(target_date))
+    VisualizeActivities.execute(target_date)
   end
 end
 

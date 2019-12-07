@@ -19,7 +19,8 @@ module VisualizeActivities
 
   class Error < StandardError; end
 
-  def self.execute(target_time)
+  def self.execute(target_date)
+    target_time = TargetTime.new(target_date)
     issues = VisualizeActivities::Query::Issues.search(
         ENV['OWNER'],
         ENV['REPOSITORY'],
