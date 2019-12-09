@@ -22,6 +22,7 @@ module VisualizeActivities::Query
         VisualizeActivities::Issue.new(
                                       issue.title,
                                       issue.body_html,
+                                      issue.assignees.nodes.map(&:login),
                                       issue.url,
                                       issue.created_at,
                                       VisualizeActivities::TimelineItemSet.new(timeline_items),

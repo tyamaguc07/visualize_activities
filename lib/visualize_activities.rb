@@ -21,7 +21,9 @@ module VisualizeActivities
 
   def self.execute(target_date)
     target_time = TargetTime.new(target_date)
-    issues = VisualizeActivities::Query::Issues.search(
+    target = ENV['TARGET']
+
+    issue_set = VisualizeActivities::Query::Issues.search(
         ENV['OWNER'],
         ENV['REPOSITORY'],
         ENV['TARGET'],
@@ -31,11 +33,12 @@ module VisualizeActivities
     template = <<template
 # Assigned issues
 
-<% issues.each do |issue| %>
+<% issue_set.assigned(target).each do |issue| %>
 
 <%= issue.to_markdown %>
 
 <% end %>
+
 template
 
     puts ERB.new(template).result(binding)

@@ -1,7 +1,7 @@
 require "cgi"
 
 module VisualizeActivities
-  Issue = Struct.new(:title, :body_html, :url, :created_at, :timeline_item_set) do
+  Issue = Struct.new(:title, :body_html, :assignees, :url, :created_at, :timeline_item_set) do
 
     def to_markdown
       <<-"MARKDOWN"
