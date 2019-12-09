@@ -1,13 +1,22 @@
 module VisualizeActivities::Query
   class Issues
-    def self.search(owner, repository, target, target_time)
-      result = VisualizeActivities::Client.query(Query, variables: {
-          owner: owner,
-          repository: repository,
-          since: target_time.iso8601,
-      })
+   def self.search(owner, repository, target, target_time)
+     issues = []
+     has_next_page, after = true, nil
 
-      issues = issues_mapper(result.data.repository.issues.nodes)
+     while has_next_page
+       result = VisualizeActivities::Client.query(Query, variables: {
+           owner: owner,
+           repository: repository,
+           since: target_time.iso8601,
+           after: after,
+       })
+
+       data = result.data.repository.issues
+
+       issues << issues_mapper(data.nodes)
+       has_next_page, after = data.page_info.has_next_page, data.page_info.end_cursor
+     end
 
       VisualizeActivities::IssueSet.new(issues)
     end
@@ -41,9 +50,13 @@ module VisualizeActivities::Query
     end
 
     Query = VisualizeActivities::Client.parse <<-GraphQL
-query($owner: String!, $repository: String!, $since: DateTime!) {
+query($owner: String!, $repository: String!, $since: DateTime!, $after: String) {
   repository(owner: $owner, name: $repository) {
-    issues(filterBy: {since: $since} first: 100) {
+    issues(filterBy: {since: $since} first: 100, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
       nodes {
         title
         assignees(first: 5) {
