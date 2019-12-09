@@ -14,7 +14,7 @@ module VisualizeActivities::Query
 
        data = result.data.repository.issues
 
-       issues << issues_mapper(data.nodes)
+       issues += issues_mapper(data.nodes)
        has_next_page, after = data.page_info.has_next_page, data.page_info.end_cursor
      end
 
