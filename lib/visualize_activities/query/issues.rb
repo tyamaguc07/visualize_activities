@@ -7,7 +7,7 @@ module VisualizeActivities::Query
           since: target_time.iso8601,
       })
 
-      result.data.repository.issues.nodes.map do |issue|
+      issues = result.data.repository.issues.nodes.map do |issue|
         timeline_items = issue.timeline_items.edges.map(&:node).each_with_object([]) do |timeline_item, result|
           result << case timeline_item.__typename
                     when "CrossReferencedEvent"
@@ -27,6 +27,8 @@ module VisualizeActivities::Query
                                       VisualizeActivities::TimelineItemSet.new(timeline_items),
                                       )
       end
+
+      VisualizeActivities::IssueSet.new(issues)
     end
 
     Query = VisualizeActivities::Client.parse <<-GraphQL
