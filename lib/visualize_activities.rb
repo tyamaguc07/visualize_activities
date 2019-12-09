@@ -42,5 +42,11 @@ template
   end
 end
 
-require 'visualize_activities/query/base'
-require 'visualize_activities/base'
+require 'visualize_activities/target_time'
+
+require 'visualize_activities/query'
+
+require 'visualize_activities/issue'
+require 'visualize_activities/timeline_item'
+require 'visualize_activities/timeline_item_set'
+

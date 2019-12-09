@@ -2,13 +2,30 @@ module VisualizeActivities::Query
   class Issues
     def self.search(owner, repository, target, target_time)
       result = VisualizeActivities::Client.query(Query, variables: {
-        owner: owner,
-        repository: repository,
-        since: target_time.iso8601,
+          owner: owner,
+          repository: repository,
+          since: target_time.iso8601,
       })
 
       result.data.repository.issues.nodes.map do |issue|
-        VisualizeActivities::Issue.new(issue.title, issue.body_html, issue.url, issue.created_at)
+        timeline_items = issue.timeline_items.edges.map(&:node).each_with_object([]) do |timeline_item, result|
+          result << case timeline_item.__typename
+                    when "CrossReferencedEvent"
+                      VisualizeActivities::TimelineItem::CrossReferencedEvent.new(timeline_item.actor.login, timeline_item.url, timeline_item.created_at)
+                    when "IssueComment"
+                      VisualizeActivities::TimelineItem::IssueComment.new(timeline_item.author.login, timeline_item.body_html, timeline_item.created_at)
+                    else
+                      next
+                    end
+        end
+
+        VisualizeActivities::Issue.new(
+                                      issue.title,
+                                      issue.body_html,
+                                      issue.url,
+                                      issue.created_at,
+                                      VisualizeActivities::TimelineItemSet.new(timeline_items),
+                                      )
       end
     end
 
