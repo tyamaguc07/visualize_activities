@@ -1,16 +1,16 @@
 module VisualizeActivities::Query
   class Issues
-   def self.search(owner, repository, target, target_time)
-     issues = []
-     has_next_page, after = true, nil
+    def self.search(owner, repository, target, target_time)
+      issues = []
+      has_next_page, after = true, nil
 
-     while has_next_page
-       result = VisualizeActivities::Client.query(Query, variables: {
-           owner: owner,
-           repository: repository,
-           since: target_time.iso8601,
-           after: after,
-       })
+      while has_next_page
+        result = VisualizeActivities::Client.query(Query, variables: {
+            owner: owner,
+            repository: repository,
+            since: target_time.iso8601,
+            after: after,
+        })
 
        data = result.data.repository.issues
 
