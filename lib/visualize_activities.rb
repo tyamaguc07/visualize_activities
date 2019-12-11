@@ -34,12 +34,29 @@ module VisualizeActivities
     )
 
     template = <<template
-# Assigned issues
+# <%= ENV['REPOSITORY'] %>
 
-<% issue_set.assigned(target).each do |issue| %>
+## Assigned issues
+
+<% assigned_issue_set.each do |issue| %>
 
 <%= issue.to_markdown %>
 
+<% end %>
+
+## Contributed issues
+
+<% contributed_issue_set.each do |issue| %>
+
+<%= issue.to_markdown %>
+
+### Comments
+
+<% issue.comments.each do |comment| %>
+
+<%= comment.to_markdown %>
+
+<% end %>
 <% end %>
 
 template
@@ -56,4 +73,3 @@ require 'visualize_activities/issue'
 require 'visualize_activities/issue_set'
 require 'visualize_activities/timeline_item'
 require 'visualize_activities/timeline_item_set'
-

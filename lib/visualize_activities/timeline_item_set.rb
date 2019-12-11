@@ -4,6 +4,10 @@ module VisualizeActivities
       @timeline_items = timeline_items
     end
 
+    def comments
+      timeline_items.select(&:comment?)
+    end
+
     private
 
     attr_reader :timeline_items

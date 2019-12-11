@@ -8,6 +8,21 @@ module VisualizeActivities
         @content = content
         @created_at = created_at
       end
+
+      def comment?
+        false
+      end
+
+      def pull_requeset?
+        false
+      end
+
+      def reference_issue?
+        false
+      end
+
+      def to_markdown
+      end
     end
   end
 end
