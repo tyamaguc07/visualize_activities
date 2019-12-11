@@ -26,7 +26,7 @@ module VisualizeActivities
     target_time = TargetTime.new(target_date)
     target = ENV['TARGET']
 
-    issue_set = VisualizeActivities::Query::Issues.search(
+    assigned_issue_set, contributed_issue_set = VisualizeActivities::Query::Issues.search(
         ENV['OWNER'],
         ENV['REPOSITORY'],
         ENV['TARGET'],

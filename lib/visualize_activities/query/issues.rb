@@ -1,7 +1,7 @@
 module VisualizeActivities::Query
   class Issues
     def self.search(owner, repository, target, target_time)
-      Issues.new(owner, repository, target, target_time).search
+      return Issues.new(owner, repository, target, target_time).search
     end
 
     def initialize(owner, repository, target, target_time)
@@ -14,7 +14,7 @@ module VisualizeActivities::Query
     attr_reader :owner, :repository, :target, :target_time
 
     def search
-      issues = []
+      assigned, contributed = [], []
       has_next_page, after = true, nil
 
       while has_next_page
@@ -27,30 +27,41 @@ module VisualizeActivities::Query
 
         data = result.data.repository.issues
 
-        issues += issues_mapper(data.nodes)
+        issues = issues_mapper(data.nodes)
+
+        assigned += issues[:assigned]
+        contributed += issues[:contributed]
+
         has_next_page, after = data.page_info.has_next_page, data.page_info.end_cursor
       end
 
-      VisualizeActivities::IssueSet.new(issues)
+      return VisualizeActivities::IssueSet.new(assigned), VisualizeActivities::IssueSet.new(contributed)
     end
 
     private
 
     def issues_mapper(issues)
-      issues.each_with_object([]) do |issue, results|
-        next if issue.assignees.nodes.map(&:login).none?(target)
-
+      issues.each_with_object({assigned: [], contributed: []}) do |issue, results|
         timeline_items = timeline_items_mapper(issue.timeline_items.edges.map(&:node))
 
-        next if timeline_items.empty?
-
-        results << VisualizeActivities::Issue.new(
+        if issue.assignees.nodes.map(&:login).any?(target)
+          results[:assigned] << VisualizeActivities::Issue.new(
+              issue.title,
+              issue.body_html,
+              issue.url,
+              issue.created_at,
+              VisualizeActivities::TimelineItemSet.new(timeline_items),
+              )
+        else
+          next if timeline_items.empty?
+          results[:contributed] << VisualizeActivities::Issue.new(
             issue.title,
             issue.body_html,
             issue.url,
             issue.created_at,
             VisualizeActivities::TimelineItemSet.new(timeline_items),
             )
+        end
       end
     end
 
