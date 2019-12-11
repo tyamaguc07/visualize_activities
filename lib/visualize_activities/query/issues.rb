@@ -42,31 +42,31 @@ module VisualizeActivities::Query
 
     def issues_mapper(issues)
       issues.each_with_object({assigned: [], contributed: []}) do |issue, results|
-        timeline_items = timeline_items_mapper(issue.timeline_items.edges.map(&:node))
+        timeline_item_set = generate_timeline_item_set(issue.timeline_items.edges.map(&:node))
 
-        if issue.assignees.nodes.map(&:login).any?(target)
+        if issue.assignees.nodes.map(&:login).any?(target) && timeline_item_set.has_active_item?
           results[:assigned] << VisualizeActivities::Issue.new(
               issue.title,
               issue.body_html,
               issue.url,
               issue.created_at,
-              VisualizeActivities::TimelineItemSet.new(timeline_items),
+              timeline_item_set,
               )
         else
-          next if timeline_items.empty?
+          next if timeline_item_set.not_exists?
           results[:contributed] << VisualizeActivities::Issue.new(
             issue.title,
             issue.body_html,
             issue.url,
             issue.created_at,
-            VisualizeActivities::TimelineItemSet.new(timeline_items),
+            timeline_item_set,
             )
         end
       end
     end
 
-    def timeline_items_mapper(timeline_items)
-      timeline_items.each_with_object([]) do |timeline_item, results|
+    def generate_timeline_item_set(timeline_items)
+      results = timeline_items.each_with_object([]) do |timeline_item, results|
         result = case timeline_item.__typename
                  when "CrossReferencedEvent"
                    VisualizeActivities::TimelineItem::CrossReferencedEvent.new(timeline_item.actor.login, timeline_item.url, timeline_item.created_at)
@@ -77,6 +77,7 @@ module VisualizeActivities::Query
                  end
         results << result if target == result.username && target_time.within?(result.created_at)
       end
+      VisualizeActivities::TimelineItemSet.new(results)
     end
 
 

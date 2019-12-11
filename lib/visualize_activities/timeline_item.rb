@@ -9,11 +9,15 @@ module VisualizeActivities
         @created_at = created_at
       end
 
+      def active?
+        comment? || pull_request?
+      end
+
       def comment?
         false
       end
 
-      def pull_requeset?
+      def pull_request?
         false
       end
 
