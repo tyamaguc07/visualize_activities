@@ -34,14 +34,19 @@ module VisualizeActivities::Query
       VisualizeActivities::IssueSet.new(issues)
     end
 
+    private
+
     def issues_mapper(issues)
-      issues.map do |issue|
+      issues.each_with_object([]) do |issue, results|
+        next if issue.assignees.nodes.map(&:login).none?(target)
+
         timeline_items = timeline_items_mapper(issue.timeline_items.edges.map(&:node))
 
-        VisualizeActivities::Issue.new(
+        next if timeline_items.empty?
+
+        results << VisualizeActivities::Issue.new(
             issue.title,
             issue.body_html,
-            issue.assignees.nodes.map(&:login),
             issue.url,
             issue.created_at,
             VisualizeActivities::TimelineItemSet.new(timeline_items),
@@ -50,17 +55,19 @@ module VisualizeActivities::Query
     end
 
     def timeline_items_mapper(timeline_items)
-      timeline_items.each_with_object([]) do |timeline_item, result|
-        result << case timeline_item.__typename
-                  when "CrossReferencedEvent"
-                    VisualizeActivities::TimelineItem::CrossReferencedEvent.new(timeline_item.actor.login, timeline_item.url, timeline_item.created_at)
-                  when "IssueComment"
-                    VisualizeActivities::TimelineItem::IssueComment.new(timeline_item.author.login, timeline_item.body_html, timeline_item.created_at)
-                  else
-                    next
-                  end
+      timeline_items.each_with_object([]) do |timeline_item, results|
+        result = case timeline_item.__typename
+                 when "CrossReferencedEvent"
+                   VisualizeActivities::TimelineItem::CrossReferencedEvent.new(timeline_item.actor.login, timeline_item.url, timeline_item.created_at)
+                 when "IssueComment"
+                   VisualizeActivities::TimelineItem::IssueComment.new(timeline_item.author.login, timeline_item.body_html, timeline_item.created_at)
+                 else
+                   next
+                 end
+        results << result if target == result.username && target_time.within?(result.created_at)
       end
     end
+
 
     Query = VisualizeActivities::Client.parse <<-GraphQL
 query($owner: String!, $repository: String!, $since: DateTime!, $after: String) {
@@ -81,7 +88,7 @@ query($owner: String!, $repository: String!, $since: DateTime!, $after: String) 
         url
         createdAt
         timelineItems(
-          itemTypes: [ASSIGNED_EVENT, CROSS_REFERENCED_EVENT],
+          itemTypes: [CROSS_REFERENCED_EVENT, ISSUE_COMMENT],
           since: $since,
           first: 100) {
           edges {

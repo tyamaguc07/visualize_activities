@@ -12,5 +12,5 @@ module VisualizeActivities
   end
 end
 
-require 'visualize_activities/timeline_item/issue_comment'
 require 'visualize_activities/timeline_item/cross_referenced_event'
+require 'visualize_activities/timeline_item/issue_comment'
