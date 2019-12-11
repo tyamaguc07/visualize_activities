@@ -10,5 +10,18 @@ class TargetTime
     @time = Time.parse(target_date)
   end
 
+  def within?(time)
+    time.between?(start_time, end_time)
+  end
+
+  def start_time
+    @start_time ||= time.beginning_of_month
+  end
+
+  def end_time
+    @end_time ||= time.end_of_month
+  end
+
+  private
   attr_accessor :time
 end

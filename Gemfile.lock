@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     visualize_activities (0.1.0)
+      activesupport
       graphql-client
       thor
 

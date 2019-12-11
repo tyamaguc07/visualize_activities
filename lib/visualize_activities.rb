@@ -1,5 +1,8 @@
 require "visualize_activities/version"
 
+require 'active_support'
+require 'active_support/time'
+
 require "graphql/client"
 require "graphql/client/http"
 

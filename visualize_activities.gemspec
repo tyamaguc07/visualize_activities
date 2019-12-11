@@ -31,4 +31,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "thor"
   spec.add_dependency "graphql-client"
+  spec.add_dependency "activesupport"
 end
