@@ -1,6 +1,19 @@
 module VisualizeActivities::Query
   class Issues
     def self.search(owner, repository, target, target_time)
+      Issues.new(owner, repository, target, target_time).search
+    end
+
+    def initialize(owner, repository, target, target_time)
+      @owner = owner
+      @repository = repository
+      @target = target
+      @target_time = target_time
+    end
+
+    attr_reader :owner, :repository, :target, :target_time
+
+    def search
       issues = []
       has_next_page, after = true, nil
 
@@ -12,16 +25,16 @@ module VisualizeActivities::Query
             after: after,
         })
 
-       data = result.data.repository.issues
+        data = result.data.repository.issues
 
-       issues += issues_mapper(data.nodes)
-       has_next_page, after = data.page_info.has_next_page, data.page_info.end_cursor
-     end
+        issues += issues_mapper(data.nodes)
+        has_next_page, after = data.page_info.has_next_page, data.page_info.end_cursor
+      end
 
       VisualizeActivities::IssueSet.new(issues)
     end
 
-    def self.issues_mapper(issues)
+    def issues_mapper(issues)
       issues.map do |issue|
         timeline_items = timeline_items_mapper(issue.timeline_items.edges.map(&:node))
 
@@ -36,7 +49,7 @@ module VisualizeActivities::Query
       end
     end
 
-    def self.timeline_items_mapper(timeline_items)
+    def timeline_items_mapper(timeline_items)
       timeline_items.each_with_object([]) do |timeline_item, result|
         result << case timeline_item.__typename
                   when "CrossReferencedEvent"
