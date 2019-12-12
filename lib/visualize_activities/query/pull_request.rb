@@ -19,7 +19,7 @@ module VisualizeActivities::Query
     private
 
     Query = VisualizeActivities::Client.parse <<-GraphQL
-query($owner: String!, $repository: String!, $since: DateTime!, $after: String) {
+query($owner: String!, $repository: String!, $after: String) {
   repository(owner: $owner, name: $repository) {
     pullRequests(after: $after, orderBy: {field: CREATED_AT, direction: DESC}, first: 100) {
       nodes {
@@ -36,9 +36,9 @@ query($owner: String!, $repository: String!, $since: DateTime!, $after: String) 
             createdAt
           }
         }
-        pageInfo {
-          endCursor
-        }
+      }
+      pageInfo {
+        endCursor
       }
     }
   }
