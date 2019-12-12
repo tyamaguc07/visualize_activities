@@ -1,17 +1,14 @@
 module VisualizeActivities::Query
   class Issues
-    def self.search(owner, repository, target, target_time)
-      return Issues.new(owner, repository, target, target_time).search
+    def self.search(setting)
+      return Issues.new(setting).search
     end
 
-    def initialize(owner, repository, target, target_time)
-      @owner = owner
-      @repository = repository
-      @target = target
-      @target_time = target_time
+    def initialize(setting)
+      @setting = setting
     end
 
-    attr_reader :owner, :repository, :target, :target_time
+    attr_reader :setting
 
     def search
       assigned, contributed = [], []
@@ -19,9 +16,9 @@ module VisualizeActivities::Query
 
       while has_next_page
         result = VisualizeActivities::Client.query(Query, variables: {
-            owner: owner,
-            repository: repository,
-            since: target_time.iso8601,
+            owner: setting.owner,
+            repository: setting.repository,
+            since: setting.target_time.iso8601,
             after: after,
         })
 
@@ -44,7 +41,7 @@ module VisualizeActivities::Query
       issues.each_with_object({assigned: [], contributed: []}) do |issue, results|
         timeline_item_set = generate_timeline_item_set(issue.timeline_items.edges.map(&:node))
 
-        if issue.assignees.nodes.map(&:login).any?(target) && timeline_item_set.has_active_item?
+        if issue.assignees.nodes.map(&:login).any?(setting.target) && timeline_item_set.has_active_item?
           results[:assigned] << VisualizeActivities::Issue.new(
               issue.title,
               issue.body_html,
@@ -75,7 +72,7 @@ module VisualizeActivities::Query
                  else
                    next
                  end
-        results << result if target == result.username && target_time.within?(result.created_at)
+        results << result if setting.target == result.username && setting.target_time.within?(result.created_at)
       end
       VisualizeActivities::TimelineItemSet.new(results)
     end

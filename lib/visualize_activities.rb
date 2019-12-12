@@ -6,8 +6,6 @@ require 'active_support/time'
 require "graphql/client"
 require "graphql/client/http"
 
-require 'erb'
-
 module VisualizeActivities
   HTTP = GraphQL::Client::HTTP.new('https://api.github.com/graphql') do
     def headers(context)
@@ -23,49 +21,23 @@ module VisualizeActivities
   class Error < StandardError; end
 
   def self.execute(target_date)
-    target_time = TargetTime.new(target_date)
-    target = ENV['TARGET']
-
-    assigned_issue_set, contributed_issue_set = VisualizeActivities::Query::Issues.search(
+    setting = VisualizeActivities::Setting.new(
         ENV['OWNER'],
         ENV['REPOSITORY'],
         ENV['TARGET'],
-        target_time,
-    )
+        TargetTime.new(target_date),
+        )
 
-    template = <<template
-# <%= ENV['REPOSITORY'] %>
+    results = VisualizeActivities::Visualizer::Issue.execute(setting)
 
-## Assigned issues
-
-<% assigned_issue_set.each do |issue| %>
-
-<%= issue.to_markdown %>
-
-<% end %>
-
-## Contributed issues
-
-<% contributed_issue_set.each do |issue| %>
-
-<%= issue.to_markdown %>
-
-### Comments
-
-<% issue.comments.each do |comment| %>
-
-<%= comment.to_markdown %>
-
-<% end %>
-<% end %>
-
-template
-
-    puts ERB.new(template).result(binding)
+    puts results
   end
 end
 
+require 'visualize_activities/setting'
 require 'visualize_activities/target_time'
+
+require 'visualize_activities/visualizer/issue'
 
 require 'visualize_activities/query'
 
