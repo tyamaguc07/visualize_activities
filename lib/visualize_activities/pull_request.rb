@@ -26,3 +26,8 @@ module VisualizeActivities
     attr_reader :title, :body_html, :url, :review_set, :comment_set, :updated_at
   end
 end
+
+require 'visualize_activities/pull_request/review_set'
+require 'visualize_activities/pull_request/review'
+require 'visualize_activities/pull_request/comment_set'
+require 'visualize_activities/pull_request/comment'

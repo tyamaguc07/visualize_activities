@@ -1,6 +1,6 @@
 module VisualizeActivities
   class PullRequest
-    def Comment
+    class Comment
       def initialize(username, url, body_html, diff_hunk, created_at)
         @username = username
         @url = url

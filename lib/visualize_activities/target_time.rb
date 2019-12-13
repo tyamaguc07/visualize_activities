@@ -14,6 +14,10 @@ class TargetTime
     time.between?(start_time, end_time)
   end
 
+  def without?(time)
+    !within?(time)
+  end
+
   def start_time
     @start_time ||= time.beginning_of_month
   end

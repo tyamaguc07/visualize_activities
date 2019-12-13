@@ -43,5 +43,7 @@ require 'visualize_activities/query'
 
 require 'visualize_activities/issue'
 require 'visualize_activities/issue_set'
+require 'visualize_activities/pull_request'
+require 'visualize_activities/pull_request_set'
 require 'visualize_activities/timeline_item'
 require 'visualize_activities/timeline_item_set'
