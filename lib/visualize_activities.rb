@@ -21,17 +21,18 @@ module VisualizeActivities
   class Error < StandardError; end
 
   def self.execute(target_date)
-    setting = VisualizeActivities::Setting.new(
+    results = ENV['REPOSITORIES'].split(',').map do |repository|
+      setting = VisualizeActivities::Setting.new(
         ENV['OWNER'],
-        ENV['REPOSITORY'],
+        repository,
         ENV['TARGET'],
         TargetTime.new(target_date),
-        )
+      )
 
-    pull_requests = VisualizeActivities::Visualizer::PullRequest.execute(setting)
-    issues = VisualizeActivities::Visualizer::Issue.execute(setting)
+      pull_requests = VisualizeActivities::Visualizer::PullRequest.execute(setting)
+      issues = VisualizeActivities::Visualizer::Issue.execute(setting)
 
-    puts <<template
+      <<template
 # #{setting.repository}
 
 #{pull_requests}
@@ -39,6 +40,9 @@ module VisualizeActivities
 #{issues}
 
 template
+    end
+
+    puts results.join("\n")
   end
 end
 
