@@ -1,12 +1,20 @@
 module VisualizeActivities
   class PullRequest
-    def initialize(title, body_html, url, updated_at, review_set, comment_set)
+    def initialize(title, body_html, url, review_set, comment_set, updated_at)
       @title = title
       @body_html = body_html
       @url = url
       @review_set = review_set
       @comment_set = comment_set
       @updated_at = updated_at
+    end
+
+    def review_comments
+      review_set.comments
+    end
+
+    def comments
+      comment_set
     end
 
     def to_markdown

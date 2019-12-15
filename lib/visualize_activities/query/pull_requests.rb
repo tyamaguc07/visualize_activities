@@ -43,9 +43,7 @@ module VisualizeActivities::Query
         review_set = generate_review_set(pull_request.reviews.nodes)
         comment_set = generate_comment_set(pull_request.comments.nodes)
 
-        next if review_set.not_exists? && comment_set.not_exists? && (pull_request.merged && setting.target_time.without?(pull_request.merged_at))
-
-        if pull_request.author.login == setting.target
+        if created?(pull_request)
           results[:created] << VisualizeActivities::PullRequest.new(
             pull_request.title,
             pull_request.body_html,
@@ -54,7 +52,7 @@ module VisualizeActivities::Query
             comment_set,
             pull_request.updated_at,
           )
-        else
+        elsif contributed?(pull_request, review_set, comment_set)
           results[:contributed] << VisualizeActivities::PullRequest.new(
             pull_request.title,
             pull_request.body_html,
@@ -65,6 +63,26 @@ module VisualizeActivities::Query
           )
         end
       end
+    end
+
+    # FIXME: ドメインロジックをクエリに実装してる
+    def created?(pull_request)
+      return false if pull_request.author.login != setting.target
+
+      return true if setting.target_time.within?(pull_request.created_at)
+      return true if pull_request.merged && setting.target_time.within?(pull_request.merged_at)
+      return true if pull_request.closed && setting.target_time.within?(pull_request.closed_at)
+
+      false
+    end
+
+    # FIXME: ドメインロジックをクエリに実装してる
+    def contributed?(pull_request, review_set, comment_set)
+      return false if pull_request.author.login == setting.target
+
+      return true if review_set.exists? || comment_set.exists?
+
+      false
     end
 
     def generate_review_set(reviews)
@@ -103,6 +121,7 @@ query($owner: String!, $repository: String!, $after: String) {
         title
         url
         bodyHTML
+        createdAt
         updatedAt
         closed
         closedAt
