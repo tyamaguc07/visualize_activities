@@ -7,8 +7,6 @@ module VisualizeActivities
         assigned_issue_set, contributed_issue_set = VisualizeActivities::Query::Issues.search(setting)
 
         template = <<template
-# <%= ENV['REPOSITORY'] %>
-
 ## Assigned issues
 
 <% assigned_issue_set.each do |issue| %>

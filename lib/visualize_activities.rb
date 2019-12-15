@@ -28,9 +28,17 @@ module VisualizeActivities
         TargetTime.new(target_date),
         )
 
-    results = VisualizeActivities::Visualizer::Issue.execute(setting)
+    pull_requests = VisualizeActivities::Visualizer::PullRequest.execute(setting)
+    issues = VisualizeActivities::Visualizer::Issue.execute(setting)
 
-    puts results
+    puts <<template
+# #{setting.repository}
+
+#{pull_requests}
+
+#{issues}
+
+template
   end
 end
 
@@ -38,6 +46,7 @@ require 'visualize_activities/setting'
 require 'visualize_activities/target_time'
 
 require 'visualize_activities/visualizer/issue'
+require 'visualize_activities/visualizer/pull_request'
 
 require 'visualize_activities/query'
 

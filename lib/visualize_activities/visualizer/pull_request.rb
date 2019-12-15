@@ -7,8 +7,6 @@ module VisualizeActivities
         created, contributed = VisualizeActivities::Query::PullRequests.search(setting)
 
         template = <<template
-# <%= ENV['REPOSITORY'] %>
-
 ## Created PullRequests
 
 <% created.each do |pull_request| %>
