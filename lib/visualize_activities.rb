@@ -20,12 +20,12 @@ module VisualizeActivities
 
   class Error < StandardError; end
 
-  def self.execute(target_date)
+  def self.execute(target, target_date)
     results = ENV['REPOSITORIES'].split(',').map do |repository|
       setting = VisualizeActivities::Setting.new(
         ENV['OWNER'],
         repository,
-        ENV['TARGET'],
+        target,
         TargetTime.new(target_date),
       )
 
