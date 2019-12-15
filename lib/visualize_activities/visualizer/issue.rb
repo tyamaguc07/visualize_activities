@@ -21,7 +21,7 @@ module VisualizeActivities
 
 <%= issue.to_markdown %>
 
-### Comments
+#### Comments
 
 <% issue.comments.each do |comment| %>
 
