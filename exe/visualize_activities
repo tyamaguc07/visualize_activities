@@ -4,9 +4,9 @@ require "visualize_activities"
 require "thor"
 
 class VisualizeActivitiesCLI < Thor
-  desc 'exec target target_date', 'fetch issues activities'
-  def exec(target, target_date)
-    VisualizeActivities.execute(target, target_date)
+  desc 'exec target start_date', 'fetch issues activities'
+  def exec(target, start_date, end_date=nil)
+    VisualizeActivities.execute(target, start_date, end_date)
   end
 end
 

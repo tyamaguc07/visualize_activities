@@ -20,13 +20,13 @@ module VisualizeActivities
 
   class Error < StandardError; end
 
-  def self.execute(target, target_date)
+  def self.execute(target, start_date, end_date=nil)
     results = ENV['REPOSITORIES'].split(',').map do |repository|
       setting = VisualizeActivities::Setting.new(
         ENV['OWNER'],
         repository,
         target,
-        TargetTime.new(target_date),
+        TargetTime.new(start_date, end_date),
       )
 
       pull_requests = VisualizeActivities::Visualizer::PullRequest.execute(setting)
