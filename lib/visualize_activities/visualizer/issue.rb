@@ -8,26 +8,27 @@ module VisualizeActivities
 
         template = <<template
 ## Assigned issues
-
+<% if assigned_issue_set.present? %>
 <% assigned_issue_set.each do |issue| %>
-
 <%= issue.to_markdown %>
-
+<% end %>
+<% else %>
+なし
 <% end %>
 
 ## Contributed issues
-
+<% if contributed_issue_set.present? %>
 <% contributed_issue_set.each do |issue| %>
-
 <%= issue.to_markdown %>
 
 #### Comments
 
 <% issue.comments.each do |comment| %>
-
 <%= comment.to_markdown %>
-
 <% end %>
+<% end %>
+<% else %>
+なし
 <% end %>
 
 template
