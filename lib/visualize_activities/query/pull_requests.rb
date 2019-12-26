@@ -50,7 +50,10 @@ module VisualizeActivities::Query
             pull_request.url,
             review_set,
             comment_set,
+            pull_request.created_at,
             pull_request.updated_at,
+            pull_request.merged_at,
+            pull_request.closed_at,
           )
         elsif contributed?(pull_request, review_set, comment_set)
           results[:contributed] << VisualizeActivities::PullRequest.new(
@@ -59,7 +62,10 @@ module VisualizeActivities::Query
             pull_request.url,
             review_set,
             comment_set,
+            pull_request.created_at,
             pull_request.updated_at,
+            pull_request.merged_at,
+            pull_request.closed_at,
           )
         end
       end
