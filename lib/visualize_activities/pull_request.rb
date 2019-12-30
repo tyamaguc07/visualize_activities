@@ -1,12 +1,15 @@
 module VisualizeActivities
   class PullRequest
-    def initialize(title, body_html, url, review_set, comment_set, updated_at)
+    def initialize(title, body_html, url, review_set, comment_set, created_at, updated_at, merged_at, closed_at)
       @title = title
       @body_html = body_html
       @url = url
       @review_set = review_set
       @comment_set = comment_set
+      @created_at = created_at
       @updated_at = updated_at
+      @merged_at = merged_at
+      @closed_at = closed_at
     end
 
     def review_comments
@@ -20,6 +23,7 @@ module VisualizeActivities
     def to_markdown
       <<-"MARKDOWN"
 ### [#{title}](#{url})
+* 
 
 <iframe srcdoc="#{escaped_body_html}" style="width: 100%" />
       MARKDOWN
@@ -31,7 +35,7 @@ module VisualizeActivities
       body_html.gsub('&', '&amp;').gsub('"','&quot;')
     end
 
-    attr_reader :title, :body_html, :url, :review_set, :comment_set, :updated_at
+    attr_reader :title, :body_html, :url, :review_set, :comment_set, :creted_at, :updated_at, :merged_at, :closed_at
   end
 end
 
