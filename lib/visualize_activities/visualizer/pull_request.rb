@@ -4,21 +4,21 @@ module VisualizeActivities
   module Visualizer
     class PullRequest
       def self.execute(setting)
-        created, contributed = VisualizeActivities::Query::PullRequests.search(setting)
+        created_pull_request_set, contributed_pull_request_set = VisualizeActivities::Query::PullRequests.search(setting)
 
         template = <<template
 ## Created PullRequests
-
-<% created.each do |pull_request| %>
-
+<% if created_pull_request_set.present? %>
+<% created_pull_request_set.each do |pull_request| %>
 <%= pull_request.to_markdown %>
-
+<% end %>
+<% else %>
+なし
 <% end %>
 
 ## Contributed PullRequest
-
-<% contributed.each do |pull_request| %>
-
+<% if contributed_pull_request_set.present? %>
+<% contributed_pull_request_set.each do |pull_request| %>
 <%= pull_request.to_markdown %>
 
 #### Reviews
@@ -32,7 +32,9 @@ module VisualizeActivities
 <% pull_request.comments.each do |comment| %>
 <%= comment.to_markdown %>
 <% end %>
-
+<% end %>
+<% else %>
+なし
 <% end %>
 
 template
