@@ -10,7 +10,7 @@ module VisualizeActivities
       end
 
       def active?
-        comment? || pull_request?
+        false
       end
 
       def comment?

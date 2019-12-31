@@ -1,6 +1,10 @@
 module VisualizeActivities
   module TimelineItem
     class IssueComment < Base
+      def active?
+        true
+      end
+
       def comment?
         true
       end
