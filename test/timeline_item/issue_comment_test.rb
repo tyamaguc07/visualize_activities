@@ -8,7 +8,7 @@ module TimeLineItemTest
       @timeline_item = VisualizeActivities::TimelineItem::IssueComment.new('test_username', 'test_content', Time.now)
     end
 
-    def test
+    def test_duck_methods
       assert_equal(true, @timeline_item.active?)
       assert_equal(true, @timeline_item.comment?)
       assert_equal(false, @timeline_item.pull_request?)
