@@ -2,10 +2,10 @@ module VisualizeActivities
   module TimelineItem
     class CrossReferencedEvent < Base
       def active?
-        pull_requeset?
+        pull_request?
       end
 
-      def pull_requeset?
+      def pull_request?
         content.include?("#ref-pullrequest-")
       end
 
