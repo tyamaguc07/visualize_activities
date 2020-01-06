@@ -4,6 +4,16 @@ class TimelineItemSetTest < MiniTest::Unit::TestCase
   def setup
   end
 
+  def test_exists?
+    timeline_item_set = VisualizeActivities::TimelineItemSet.new(['dummy'])
+    assert_equal(true, timeline_item_set.exists?)
+  end
+
+  def test_not_exists?
+    timeline_item_set = VisualizeActivities::TimelineItemSet.new([])
+    assert_equal(true, timeline_item_set.not_exists?)
+  end
+
   def test_comments
     issue_comment_01 = VisualizeActivities::TimelineItem::IssueComment.new('test_username', 'test_content_01', Time.now)
     issue_comment_02 = VisualizeActivities::TimelineItem::IssueComment.new('test_username', 'test_content_02', Time.now)
