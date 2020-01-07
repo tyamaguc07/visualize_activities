@@ -14,6 +14,13 @@ class TimelineItemSetTest < MiniTest::Unit::TestCase
     assert_equal(true, timeline_item_set.not_exists?)
   end
 
+  def test_has_active_item?
+    timeline_item_set = VisualizeActivities::TimelineItemSet.new([
+      VisualizeActivities::TimelineItem::IssueComment.new('test_username', 'test_content_01', Time.now)
+    ])
+    assert_equal(true, timeline_item_set.has_active_item?)
+  end
+
   def test_comments
     issue_comment_01 = VisualizeActivities::TimelineItem::IssueComment.new('test_username', 'test_content_01', Time.now)
     issue_comment_02 = VisualizeActivities::TimelineItem::IssueComment.new('test_username', 'test_content_02', Time.now)
